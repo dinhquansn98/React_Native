@@ -4,10 +4,46 @@ import {
     View,
     SafeAreaView,
     Image,
-    StyleSheet
+    StyleSheet,
+    ActivityIndicator,
 } from 'react-native'
 import R from '@R'
+import axios from 'axios'
 export default class UserScreen extends Component {
+
+    state = {
+        data :{},
+        isLoading :true ,
+        err : null 
+
+    }
+
+
+    componentDidMount() {
+        this._getData()
+    }
+
+    _getData(){
+        console.log("Bat dau lay du lieu tu API")
+        axios.get("http://winds.hopto.org:8521/api/Service/GetUserInfor", {
+            headers: {
+                token: '73DE4D2554EED1A448CF514BAC24E6CD'
+            }
+        }).then(response => {
+            console.log(response.data)
+            this.setState({
+                isLoading: false ,
+                data: response.data.data
+            })
+        }).catch(err => {
+            console.log(err)
+            this.setState({
+                isLoading : false ,
+                err :  err
+            })
+        })
+    }
+
     render() {
         return (
             <SafeAreaView
@@ -20,7 +56,7 @@ export default class UserScreen extends Component {
                     <View style={styles.text_block_1}>
                         <View style={styles.txt_name_and_agency}>
                             <Text style={styles.txt_name} >
-                                Nguyễn Thị Thu Phương</Text>
+                                this.data</Text>
                             <Text style={styles.txt_agency}>
                                 Đại lý</Text>
                         </View>
@@ -44,12 +80,12 @@ export default class UserScreen extends Component {
                         <Text style={styles.text_sodiem}>1200</Text>
                     </View>
                     <Image style={styles.img_line} source={require('../assets/images/ic_line1.png')} />
-                    <View style = {styles.view_bac}>
-                        <View style ={styles.line2} />
+                    <View style={styles.view_bac}>
+                        <View style={styles.line2} />
                         <Text style={styles.text_bac}>Bạc</Text>
                     </View>
-                    <Text style ={ styles.text_thanhvien}>Bạn đang là thành viên bạc của Daiichi</Text>
-                    <Text style= {styles.text_quyenloi}>Quyền Lợi:</Text>
+                    <Text style={styles.text_thanhvien}>Bạn đang là thành viên bạc của Daiichi</Text>
+                    <Text style={styles.text_quyenloi}>Quyền Lợi:</Text>
                     <View style={styles.gettext}>
                         {this._getText("Chiết khấu 5% khi mua sản phẩm")}
                         {this._getText("Có nhiểu ưu đãi và chương trình")}
@@ -58,6 +94,14 @@ export default class UserScreen extends Component {
 
             </SafeAreaView>
         )
+    }
+
+    _renderBody() {
+        if(this.state.isLoading)
+        return (<ActivityIndicator />)
+        if(this.state.err)
+            return ()
+        if(this.)
     }
 
     // ham tra ve 1 view (function block)
@@ -220,7 +264,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         backgroundColor: '#EA4335',
         marginRight: 64,
-        marginLeft :64,
+        marginLeft: 64,
         paddingHorizontal: 9,
         paddingVertical: 3,
         fontSize: 16,
@@ -228,32 +272,32 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         color: 'white',
         fontFamily: 'Roboto-Regular',
-        
+
     },
     line2: {
 
         backgroundColor: '#FF0000',
-        height:1,
-       
-      
+        height: 1,
+
+
     },
-    view_bac :{
-        marginTop:18 ,
-        marginLeft :97 ,
-        marginRight:89
+    view_bac: {
+        marginTop: 18,
+        marginLeft: 97,
+        marginRight: 89
     },
-    text_thanhvien :{
-        marginLeft:68 ,
-        marginRight:67,
-        marginTop :16,
-        fontSize :14
+    text_thanhvien: {
+        marginLeft: 68,
+        marginRight: 67,
+        marginTop: 16,
+        fontSize: 14
     },
-    text_quyenloi:{
-        marginRight:156,
-        marginLeft:157,
-        marginTop:5,
-        fontSize :14,
-        fontFamily :'Medium'
+    text_quyenloi: {
+        marginRight: 156,
+        marginLeft: 157,
+        marginTop: 5,
+        fontSize: 14,
+        fontFamily: 'Medium'
     }
 })
 
