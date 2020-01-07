@@ -3,9 +3,9 @@ const dimension = ({ width, height } = Dimensions.get("window"));
 
 const colors = {
 
-	primary: "#f3f3f3",
-	primaryDark: "#125183",
-	primaryDark1: "#2E384D",
+	primary: "#12A74E",
+	primaryDark: "#10863F",
+	primaryDark1: "#12A74E",
 
 	bottombarBg: '#fafafa',
 	headerColor: '#1b75bc',
@@ -87,5 +87,7 @@ const styles = StyleSheet.create({
 	},
 
 });
+
+
 
 export { colors, sizes, fonts, styles, dimension };

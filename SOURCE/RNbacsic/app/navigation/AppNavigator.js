@@ -8,6 +8,7 @@ import RegisterScreen from '../screens/auth/RegisterScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import HomeScreen from '@screen/HomeScreen';
 import UserScreen from '@screen/UserScreen';
+import sanpham from '@screen/ProductScreen';
 import { SCREEN_ROUTER } from '@constant'
 import R from '@R';
 import * as theme from "@theme";
@@ -15,6 +16,10 @@ import * as theme from "@theme";
 import {
     Image
 } from "react-native";
+import UpdateUserInfo from '~/screens/user/UpdateUserInfo';
+import tienich from '~/screens/user/tienich';
+// import baohanh from '~/screens/user/baohanh';
+// import dungdiem from '~/screens/user/dungdiem';
 const TabBarComponent = props => <BottomTabBar {...props} />;
 
 const Auth = createStackNavigator({
@@ -25,13 +30,14 @@ const Auth = createStackNavigator({
 
 
 const tabbarIcons = {
-    [SCREEN_ROUTER.HOME]: R.images.home,
-    [SCREEN_ROUTER.USER]: R.images.user,
+    [SCREEN_ROUTER.HOME]: R.images.ic_home,
+    [SCREEN_ROUTER.USER]: R.images.ic_user,
+    [SCREEN_ROUTER.PRODUCT]: require("@image/ic_product.png"),
 };
 
 const getTabBarIcon = (navigation, focused, tintColor) => {
     const { routeName } = navigation.state;
-    const iconSource = tabbarIcons[routeName] || R.images.home;
+    const iconSource = tabbarIcons[routeName] || R.images.ic_home;
     const iconSize = focused ? 25 : 22;
     return (
         <Image
@@ -44,20 +50,65 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
 
 const Main = createBottomTabNavigator(
     {
-        [SCREEN_ROUTER.HOME]: {
-            screen: HomeScreen,
-            title: R.strings.home,
-            navigationOptions: {
-                tabBarLabel: R.strings.home,
+        [SCREEN_ROUTER.HOME]: createStackNavigator({
+            home: {
+                screen: HomeScreen,
+                title: R.strings.home,
+                navigationOptions: {
+                    tabBarLabel: R.strings.home,
+                },
+            },
+            // dungdiem:{
+            //         screen : dungdiem
+            // },
+            tienich: {
+                screen: tienich
+            },
+           
+           
+
+        },
+        {
+            defaultNavigationOptions: {
+                header: null,
             },
         },
-        [SCREEN_ROUTER.USER]: {
-            screen: UserScreen,
-            title: R.strings.user,
-            navigationOptions: {
-                tabBarLabel: R.strings.user,
+        ),
+        [SCREEN_ROUTER.USER]: createStackNavigator({
+            user: {
+                screen: UserScreen,
+                title: R.strings.user,
+                navigationOptions: {
+                    tabBarLabel: R.strings.user,
+                },
+            },
+            updateUserInfo: {
+                screen: UpdateUserInfo,
+            }
+        },
+            {
+                defaultNavigationOptions: {
+                    header: null,
+                },
+            },
+        ),
+        [SCREEN_ROUTER.PRODUCT]: createStackNavigator({
+            product: {
+                screen: sanpham,
+                title: R.strings.home,
+                navigationOptions: {
+                    tabBarLabel: R.strings.home,
+                },
+            },
+           
+        },
+        {
+            defaultNavigationOptions: {
+                header: null,
             },
         },
+        )
+    
     },
     {
         defaultNavigationOptions: ({ navigation }) => ({
@@ -82,6 +133,7 @@ const Main = createBottomTabNavigator(
                 />
             );
         },
+
         initialRouteName: 'User'
     }
 

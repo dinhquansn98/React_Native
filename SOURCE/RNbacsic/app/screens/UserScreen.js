@@ -5,105 +5,125 @@ import {
     SafeAreaView,
     Image,
     StyleSheet,
-    ActivityIndicator,
+    TouchableOpacity,
+    ActivityIndicator
 } from 'react-native'
 import R from '@R'
+import DaiichiHeader from '@component/DaiichiHeader';
+import NavigationUtil from '~/navigation/NavigationUtil';
 import axios from 'axios'
+
 export default class UserScreen extends Component {
 
     state = {
-        data :{},
-        isLoading :true ,
-        err : null 
-
+        isLoading: true,
+        err: null,
+        data: {},
     }
-
 
     componentDidMount() {
         this._getData()
     }
 
-    _getData(){
-        console.log("Bat dau lay du lieu tu API")
+    _getData() {
+        console.log("Bắt đầu lấy dữ liệu từ api")
         axios.get("http://winds.hopto.org:8521/api/Service/GetUserInfor", {
             headers: {
-                token: '73DE4D2554EED1A448CF514BAC24E6CD'
+                token: '65FD62931DE65C0F2F0EC18B28F78456'
             }
         }).then(response => {
             console.log(response.data)
             this.setState({
-                isLoading: false ,
+                isLoading: false,
                 data: response.data.data
             })
         }).catch(err => {
             console.log(err)
             this.setState({
-                isLoading : false ,
-                err :  err
+                isLoading: false,
+                err: err
             })
         })
     }
 
     render() {
         return (
-            <SafeAreaView
-                style={styles.container}>
-                <View style={styles.user_info_block}>
-                    <Image
-                        style={styles.profile_picture}
-                        source={R.images.ic_default_user}
-                    />
-                    <View style={styles.text_block_1}>
-                        <View style={styles.txt_name_and_agency}>
-                            <Text style={styles.txt_name} >
-                                this.data</Text>
-                            <Text style={styles.txt_agency}>
-                                Đại lý</Text>
-                        </View>
-                        <Text style={styles.txt_edit}>
-                            Chỉnh sửa thông tin</Text>
-                    </View>
-                </View>
-                <View style={styles.user_fuction_block}>
-                    {this._getFuncBlock("Đơn hàng", R.images.ic_order)}
-                    {this._getFuncBlock("Cửa hàng", R.images.ic_store)}
-                    {this._getFuncBlock("Lịch sử giao dịch", require("../assets/images/ic_lsdd.png"))}
-                    {this._getFuncBlock("Trở thành đại lý", require("../assets/images/ic_trothanhdaily.png"))}
-                    {this._getFuncBlock("Thông tin bảo hành", require("../assets/images/ic_thongtinbaohang.png"))}
-                    {this._getFuncBlock("Thông tin về Daiichi", require("../assets/images/ic_ttdaiichi.png"))}
-                    {this._getFuncBlock("Đăng xuất", require("../assets/images/ic_dangxuat.png"), true)}
-
-                </View>
-                <View style={styles.container2}>
-                    <View style={styles.view_diem}>
-                        <Text style={styles.text_diem}>Điểm tích lũy:</Text>
-                        <Text style={styles.text_sodiem}>1200</Text>
-                    </View>
-                    <Image style={styles.img_line} source={require('../assets/images/ic_line1.png')} />
-                    <View style={styles.view_bac}>
-                        <View style={styles.line2} />
-                        <Text style={styles.text_bac}>Bạc</Text>
-                    </View>
-                    <Text style={styles.text_thanhvien}>Bạn đang là thành viên bạc của Daiichi</Text>
-                    <Text style={styles.text_quyenloi}>Quyền Lợi:</Text>
-                    <View style={styles.gettext}>
-                        {this._getText("Chiết khấu 5% khi mua sản phẩm")}
-                        {this._getText("Có nhiểu ưu đãi và chương trình")}
-                    </View>
-                </View>
-
-            </SafeAreaView>
+            <View style={styles.container}>
+                <DaiichiHeader
+                    title="Thông tin tài khoản"
+                />
+                {this._renderBody()}
+            </View>
         )
     }
 
     _renderBody() {
-        if(this.state.isLoading)
-        return (<ActivityIndicator />)
-        if(this.state.err)
-            return ()
-        if(this.)
-    }
+        if (this.state.isLoading)
+            return (<ActivityIndicator />)
+        if (this.state.err)
+            return (<Text>Đã có lỗi xảy ra, vui lòng thử lại</Text>)
+        return (<SafeAreaView
+            style={styles.container}>
+            <View style={styles.user_info_block}>
+                <Image
+                    style={styles.profile_picture}
+                    source={R.images.ic_default_user}
+                />
+                <View style={styles.text_block_1}>
+                    <View style={styles.txt_name_and_agency}>
+                        <Text style={styles.txt_name} >
+                            {this.state.data.customerName}</Text>
+                        <Text style={styles.txt_agency}>
+                            {this.state.data.rankName}</Text>
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => {
+                            NavigationUtil.navigate('updateUserInfo')
+                        }}
+                    >
+                        <Text style={styles.txt_edit}>
+                            Chỉnh sửa thông tin</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View style={styles.user_fuction_block}>
+                {this._getFuncBlock("Đơn hàng", R.images.ic_order)}
+                {this._getFuncBlock("Cửa hàng", R.images.ic_store)}
+                {this._getFuncBlock("Lịch sử giao dịch", require("../assets/images/ic_lsdd.png"))}
+                {this._getFuncBlock("Trở thành đại lý", require("../assets/images/ic_trothanhdaily.png"))}
+                {this._getFuncBlock("Thông tin bảo hành", require("../assets/images/ic_thongtinbaohang.png"))}
+                {this._getFuncBlock("Thông tin về Daiichi", require("../assets/images/ic_ttdaiichi.png"))}
+                {this._getFuncBlock("Đăng xuất", require("../assets/images/ic_dangxuat.png"), true)}
 
+            </View>
+
+            <View style={styles.container2}>
+                <View style={styles.view_diem}>
+                    <Text style={styles.text_diem}>Điểm tích lũy:</Text>
+                    <Text style={styles.text_sodiem}>1200</Text>
+                </View>
+                <Image style={styles.img_line} source={require('../assets/images/ic_line1.png')} />
+                <View style={styles.view_bac}>
+                    <View style={styles.line2} />
+                    <Text style={styles.text_bac}>Bạc</Text>
+                </View>
+                <Text style={styles.text_thanhvien}>Bạn đang là thành viên bạc của Daiichi</Text>
+                <Text style={styles.text_quyenloi}>Quyền Lợi:</Text>
+                <View style={styles.gettext}>
+                    {this._getText("Chiết khấu 5% khi mua sản phẩm")}
+                    {this._getText("Có nhiểu ưu đãi và chương trình")}
+                </View>
+            </View>
+        </SafeAreaView>)
+    }
+    _getText(title) {
+        return (
+            <View style={styles.gettext_view}>
+                <Image source={require('../assets/images/ic_dot.png')} />
+                <Text style={styles.gettext_text}>{title}</Text>
+            </View>
+        )
+    }
     // ham tra ve 1 view (function block)
     _getFuncBlock(title, imagePath, isLast = false) {
         return (
@@ -119,14 +139,6 @@ export default class UserScreen extends Component {
                     />
                 </View>
                 {!isLast && <View style={styles.line}></View>}
-            </View>
-        )
-    }
-    _getText(title) {
-        return (
-            <View style={styles.gettext_view}>
-                <Image source={require('../assets/images/ic_dot.png')} />
-                <Text style={styles.gettext_text}>{title}</Text>
             </View>
         )
     }
@@ -216,6 +228,15 @@ const styles = StyleSheet.create({
         height: 2,
         backgroundColor: '#8B8B8B'
     },
+    header: {
+        backgroundColor: "#12A74E"
+    },
+    haeder_title: {
+        fontSize: 18,
+        color: 'white',
+        // flex :1 ,
+        // backgroundColor : 'red'
+    },
     container2: {
         backgroundColor: '#FFFFFF',
         marginTop: 9
@@ -233,7 +254,6 @@ const styles = StyleSheet.create({
         color: '#EA4335'
     },
     text_sodiem: {
-        fontSize: 18,
         color: '#EA4335',
         marginLeft: 6
     },
@@ -246,7 +266,6 @@ const styles = StyleSheet.create({
         marginLeft: 77,
         marginRight: 77,
         marginTop: 5,
-
     },
     gettext_view: {
         marginTop: 5,
@@ -254,7 +273,6 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     gettext_img: {
-
     },
     gettext_text: {
         marginLeft: 5
@@ -272,14 +290,10 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         color: 'white',
         fontFamily: 'Roboto-Regular',
-
     },
     line2: {
-
         backgroundColor: '#FF0000',
         height: 1,
-
-
     },
     view_bac: {
         marginTop: 18,
