@@ -7,37 +7,15 @@ import {
     StyleSheet,
     TouchableOpacity,
     ActivityIndicator,
-    
+    ScrollView
+
 } from 'react-native';
 import axios from 'axios'
-import {FlatList } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import DaiichiHeader from '~/components/DaiichiHeader';
 import NavigationUtil from '~/navigation/NavigationUtil';
-class Buttonview1 extends Component {
 
 
-    render() {
-
-        return (
-
-            <TouchableOpacity style={styles.Buttonview1}>
-                <Image source={require('../assets/images/img_product.png')}>
-                </Image>
-                <Text style={{ fontSize: 15 }}>{this.props.textview1}</Text>
-                <View style={{ flexDirection: 'row' }}>
-                    <Image source={require('../assets/images/ic_price.png')} />
-                    <Text style={{ color: '#F70029' }}>{this.props.gia}</Text>
-
-                </View>
-
-            </TouchableOpacity>
-
-
-
-        );
-    }
-
-}
 export default class HomeScreen extends Component {
 
 
@@ -45,15 +23,15 @@ export default class HomeScreen extends Component {
         isLoading: true,
         err: null,
         data: {},
-        mang :[0],
-        dataproduct :{}
+        mang: [0],
+        dataproduct: {}
     }
 
     componentDidMount() {
         this._getData()
         this._getDataproduct()
     }
-    _getDataproduct(){
+    _getDataproduct() {
         console.log("laydataproduct")
         axios.get("http://winds.hopto.org:8521/api/Service/getListProduct?page=1&limit=10&parentID=1", {
             headers: {
@@ -72,6 +50,25 @@ export default class HomeScreen extends Component {
                 err: err
             })
         })
+    }
+    _productItem(){
+        return (
+
+            <TouchableOpacity style={styles.Buttonview1}>
+                <Image source={require('../assets/images/img_product.png')}>
+                </Image>
+                <Text style={{ fontSize: 15 }}>{this.props.textview1}</Text>
+                <View style={{ flexDirection: 'row' }}>
+                    <Image source={require('../assets/images/ic_price.png')} />
+                    <Text style={{ color: '#F70029' }}>{this.props.gia}</Text>
+
+                </View>
+
+            </TouchableOpacity>
+
+
+
+        );
     }
 
     _getData() {
@@ -100,7 +97,7 @@ export default class HomeScreen extends Component {
         return (
             <View style={styles.container}>
                 <DaiichiHeader
-                    title =  {"xin chao ," + this.state.data.customerName}
+                    title={"xin chao ," + this.state.data.customerName}
                 />
                 {this._renderBody()}
             </View>
@@ -111,86 +108,79 @@ export default class HomeScreen extends Component {
             return (<ActivityIndicator />)
         if (this.state.err)
             return (<Text>Đã có lỗi xảy ra, vui lòng thử lại</Text>)
-        return (<SafeAreaView
-            style={styles.container}>
-            <View style={styles.box_Touch}>
-                <View style={styles.box_Touch_component1}>
-                    <Text style = {styles.box_textdiem}>Điểm Tích Lũy</Text>
-                    <View style ={styles.View_tichdiem}>
-                        <Image source = {require ("../assets/images/ic_glod.png")} />
-                        <Text>2000</Text>
-                        <Image source = {require ("../assets/images/ic_arrow.png")}/>
-                    </View>
-                </View>
-                <View style = {styles.line}></View>
-                <View>
-                    <View style={styles.view_bottom}>
-                        {this._getbuttom("Tích điểm", require("../assets/images/ic_tichdiem.png"))}
-                        {this._getbuttom("Sử dụng điểm",require("../assets/images/ic_sudungdiem.png"),() => {
-                NavigationUtil.navigate("")})}
-                        {this._getbuttom("Tiện ích",require("../assets/images/ic_tienich.png"),() => {
-                NavigationUtil.navigate("tienich")})}
-                    </View>
-                    <View style={styles.view_bottom}>
-                        {this._getbuttom("Hỏi đáp",require("../assets/images/ic_hoidap.png"))}
-                        {this._getbuttom("Đặt hàng",require("../assets/images/ic_dathang.png"))}
-                        {this._getbuttom("Bảo hành",require("../assets/images/ic_baohanh.png"))}
-                    </View>
-                </View>
-            </View>
-            <View>
-                <View style = {styles.view_text}>
-                 <Text>Sản Phẩm</Text>
-                <TouchableOpacity>
-                    <Text>Tất cả</Text>
-                </TouchableOpacity>
-                </View>
-                <FlatList
-                        data={this.state.mang}
-                        renderItem={({ item }) =>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Buttonview1 uriname3='' textview1='QUẠT CÂY DAIICHI DC-SF6900' gia='2,000,000₫' />
-                                <Buttonview1 uriname3='' textview1='QUẠT CÂY DAIICHI DC-SF6900' gia='2,000,000₫' />
-                                <Buttonview1 uriname3='' textview1='QUẠT CÂY DAIICHI DC-SF6900' gia='2,000,000₫' />
-                                <Buttonview1 uriname3='' textview1='QUẠT CÂY DAIICHI DC-SF6900' gia='2,000,000₫' />
-                                <Buttonview1 uriname3='' textview1='QUẠT CÂY DAIICHI DC-SF6900' gia='2,000,000₫' />
-
+        return (
+            <View style={styles.container}>
+                <ScrollView>
+                    <View style={styles.box_Touch}>
+                        <View style={styles.box_Touch_component1}>
+                            <Text style={styles.box_textdiem}>Điểm Tích Lũy</Text>
+                            <View style={styles.View_tichdiem}>
+                                <Image source={require("../assets/images/ic_glod.png")} />
+                                <Text>2000</Text>
+                                <Image source={require("../assets/images/ic_arrow.png")} />
                             </View>
+                        </View>
+                        <View style={styles.line}></View>
+                        <View>
+                            <View style={styles.view_bottom}>
+                                {this._getbuttom("Tích điểm", require("../assets/images/ic_tichdiem.png"))}
+                                {this._getbuttom("Sử dụng điểm", require("../assets/images/ic_sudungdiem.png"), () => {
+                                    NavigationUtil.navigate("")
+                                })}
+                                {this._getbuttom("Tiện ích", require("../assets/images/ic_tienich.png"), () => {
+                                    NavigationUtil.navigate("tienich")
+                                })}
+                            </View>
+                            <View style={styles.view_bottom}>
+                                {this._getbuttom("Hỏi đáp", require("../assets/images/ic_hoidap.png"))}
+                                {this._getbuttom("Đặt hàng", require("../assets/images/ic_dathang.png"))}
+                                {this._getbuttom("Bảo hành", require("../assets/images/ic_baohanh.png"))}
+                            </View>
+                        </View>
+                    </View>
+                    <View>
+                        <View style={styles.view_text}>
+                            <Text>Sản Phẩm</Text>
+                            <TouchableOpacity>
+                                <Text>Tất cả</Text>
+                            </TouchableOpacity>
+                        </View>
+                       <ScrollView horizontal = {true}>
+                           
+                              { this.state.dataproduct.listProduct.map(product => {
+                                  return this._productItem(product)
+                              })}
+                       </ScrollView>
 
-                        }
-
-                        horizontal={true}
-
-
-                    />
-               
+                    </View>
+                </ScrollView>
             </View>
-        </SafeAreaView>)
+        )
     }
 
-    _getbuttom(title, imagepath ,pathbuttom) {
+    _getbuttom(title, imagepath, pathbuttom) {
         return (
-            
-            <TouchableOpacity  onPress={pathbuttom} 
-            style ={styles.view_image}>
-                
-                <Image style = {styles.image} source={imagepath} />
+
+            <TouchableOpacity onPress={pathbuttom}
+                style={styles.view_image}>
+
+                <Image style={styles.image} source={imagepath} />
                 <Text>{title}</Text>
-               
+
             </TouchableOpacity>
         )
     }
-    _Buttonview(title){
+    _Buttonview(title) {
 
-            return (
-                <TouchableOpacity style= {{flexDirection :'row'}}>
-                    <Image source = {require('../assets/images/img_product.png')}>
-                    </Image >
-                    <Text>{title}</Text>
-                   
-                </TouchableOpacity>
-            )
-        }
+        return (
+            <TouchableOpacity style={{ flexDirection: 'row' }}>
+                <Image source={require('../assets/images/img_product.png')}>
+                </Image >
+                <Text>{title}</Text>
+
+            </TouchableOpacity>
+        )
+    }
 
 }
 
@@ -205,10 +195,15 @@ const styles = StyleSheet.create({
         marginLeft: 13,
         marginRight: 12,
         marginTop: 65,
-        backgroundColor : '#FFFFFF',
-        shadowOpacity :16,
-        shadowRadius:50,
-        shadowColor : '#000000',
+        backgroundColor: '#FFFFFF',
+        borderRadius :5 ,
+        shadowOffset: {
+            width: 0,
+            height: 1.5,
+          },
+          shadowRadius: 2,
+          shadowOpacity: 0.2,
+          elevation: 3,
 
     },
     box_Touch_component1: {
@@ -227,22 +222,22 @@ const styles = StyleSheet.create({
         marginLeft: 31,
         marginRight: 39,
         flexDirection: 'row',
-        justifyContent :'space-between'
-      
+        justifyContent: 'space-between'
+
     },
-    image :{
-        width:36 ,
-        height:36
+    image: {
+        width: 36,
+        height: 36
     },
-    view_image:{
-        alignContent:'center',
-        alignItems:'center'
+    view_image: {
+        alignContent: 'center',
+        alignItems: 'center'
     },
-    View_tichdiem:{
-        flexDirection:'row'
+    View_tichdiem: {
+        flexDirection: 'row'
     },
-    view_textdiem :{
-        flex:1
+    view_textdiem: {
+        flex: 1
     },
     line: {
         marginLeft: 30,
@@ -254,11 +249,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         margin: 2,
         width: 150,
-        height: 198
+        height: 198,
+        borderRadius :5 ,
+        shadowOffset: {
+            width: 0,
+            height: 1.5,
+          },
+          shadowRadius: 2,
+          shadowOpacity: 0.2,
+          elevation: 3,
     },
-    view_text:{
-        flexDirection :'row',
-        justifyContent:'space-between'
+    view_text: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     }
 
 })
