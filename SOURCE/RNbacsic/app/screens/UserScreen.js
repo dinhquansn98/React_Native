@@ -11,7 +11,8 @@ import {
 import R from '@R'
 import DaiichiHeader from '@component/DaiichiHeader';
 import NavigationUtil from '~/navigation/NavigationUtil';
-import axios from 'axios'
+import axios from 'axios';
+import { requestUserInfo } from '../constants/Api';
 
 export default class UserScreen extends Component {
 
@@ -25,25 +26,19 @@ export default class UserScreen extends Component {
         this._getData()
     }
 
-    _getData() {
-        console.log("Bắt đầu lấy dữ liệu từ api")
-        axios.get("http://winds.hopto.org:8521/api/Service/GetUserInfor", {
-            headers: {
-                token: '65FD62931DE65C0F2F0EC18B28F78456'
-            }
-        }).then(response => {
-            console.log(response.data)
+    _getData = async() => {
+        try {
+            response = await requestUserInfo()
             this.setState({
-                isLoading: false,
-                data: response.data.data
+                isLoading : false,
+                data : response.data
             })
-        }).catch(err => {
-            console.log(err)
+        } catch (error) {
             this.setState({
-                isLoading: false,
-                err: err
+                isLoading :false,
+                err: error
             })
-        })
+        }
     }
 
     render() {
@@ -142,7 +137,6 @@ export default class UserScreen extends Component {
             </View>
         )
     }
-xxxxxxxxxxxxxxxxxxx
 }
 
 const styles = StyleSheet.create({

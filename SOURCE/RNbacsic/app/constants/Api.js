@@ -6,13 +6,13 @@ import I18n from "../i18n/i18n";
 function createAxios() {
   // AsyncStorage.setItem("token", '773DE1FE9732F26F7552BC921CBE347E')
   var axiosInstant = axios.create();
-  axiosInstant.defaults.baseURL = "http://150.95.115.192:8021/";
+  axiosInstant.defaults.baseURL = "http://winds.hopto.org:8521";
   axiosInstant.defaults.timeout = 20000;
   axiosInstant.defaults.headers = { "Content-Type": "application/json" };
 
   axiosInstant.interceptors.request.use(
     async config => {
-      config.headers.token = await AsyncStorage.getItem("token");
+      config.headers.token = '65FD62931DE65C0F2F0EC18B28F78456';
       return config;
     },
     error => Promise.reject(error)
@@ -58,9 +58,9 @@ export const requestLogin = payload => {
   );
 };
 
-export const requestHomeData = (deviceID = "") => {
+export const requestUserInfo = (deviceID = "") => {
   return handleResult(
-    getAxios.get(`api/Service/GetHomeScreen?deviceID=${deviceID}`)
+    getAxios.get(`api/Service/GetUserInfor`)
   );
 };
 
@@ -69,5 +69,4 @@ export const requestHomeData = (deviceID = "") => {
     getAxios.get(`api/Service/GetHomeScreen?deviceID=${deviceID}`)
   );
 };
-
 

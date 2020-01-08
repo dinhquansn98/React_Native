@@ -10,10 +10,13 @@ import {
     ScrollView
 
 } from 'react-native';
-import axios from 'axios'
+import reactotron from 'reactotron-react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import DaiichiHeader from '~/components/DaiichiHeader';
 import NavigationUtil from '~/navigation/NavigationUtil';
+import R from '@R'
+import { requestHomeData } from '../constants/Api';
+import { requestUserInfo } from '../constants/Api';
 
 
 export default class HomeScreen extends Component {
@@ -24,72 +27,142 @@ export default class HomeScreen extends Component {
         err: null,
         data: {},
         mang: [0],
-        dataproduct: {}
+        datauser: {}
     }
 
     componentDidMount() {
-        this._getData()
         this._getDataproduct()
+        this._getData()
     }
-    _getDataproduct() {
-        console.log("laydataproduct")
-        axios.get("http://winds.hopto.org:8521/api/Service/getListProduct?page=1&limit=10&parentID=1", {
-            headers: {
-                token: '65FD62931DE65C0F2F0EC18B28F78456'
-            }
-        }).then(response => {
-            console.log(response.data)
+    _getDataproduct = async () => {
+        try {
+            response = await requestHomeData("deviceid")
+            reactotron.log(response)
             this.setState({
                 isLoading: false,
-                dataproduct: response.data.dataproduct
+                data: response.data
             })
-        }).catch(err => {
-            console.log(err)
+        } catch (error) {
             this.setState({
                 isLoading: false,
-                err: err
+                err: error
             })
-        })
+        }
     }
-    _productItem(){
-        return (
-
-            <TouchableOpacity style={styles.Buttonview1}>
-                <Image source={require('../assets/images/img_product.png')}>
-                </Image>
-                <Text style={{ fontSize: 15 }}>{this.props.textview1}</Text>
-                <View style={{ flexDirection: 'row' }}>
-                    <Image source={require('../assets/images/ic_price.png')} />
-                    <Text style={{ color: '#F70029' }}>{this.props.gia}</Text>
-
-                </View>
-
-            </TouchableOpacity>
-
-
-
-        );
+    _newsBlock() {
+        return (<View style={{
+            backgroundColor: 'white',
+        }}>
+            {this.state.data.listProduct.map(product => {
+                return this._productItem(product)
+            })}
+        </View>)
+    }
+    _productBlock() {
+        return (<View style={{
+            width: "100%",
+            height: 270,
+            backgroundColor: 'white',
+        }}>
+            <View
+                style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between'
+                }}>
+                <Text>Sản phẩm</Text>
+                <Text>Tất cả</Text>
+            </View>
+            <View
+                style={{
+                    flex: 1
+                }}>
+                <ScrollView
+                    horizontal={true}>
+                    {this.state.data.listProduct.map(product => {
+                        return this._productItem(product)
+                    })}
+                </ScrollView>
+            </View>
+        </View>)
     }
 
-    _getData() {
-        console.log("laydata")
-        axios.get("http://winds.hopto.org:8521/api/Service/GetUserInfor", {
-            headers: {
-                token: '65FD62931DE65C0F2F0EC18B28F78456'
-            }
-        }).then(response => {
-            console.log(response.data)
+    _productItem(product) {
+        return (<View style={{
+            backgroundColor: '#FFFFFF',
+            margin: 2,
+            width: 150,
+            height: 198,
+            borderRadius: 5,
+            shadowOffset: {
+                width: 0,
+                height: 1.5,
+            },
+            shadowRadius: 2,
+            shadowOpacity: 0.2,
+            elevation: 3,
+        }}>
+            <Image
+                style={{
+                    width: 150,
+                    height: 120,
+                    resizeMode: 'contain'
+                }}
+                source={{
+                    uri: product.image
+                }}
+            />
+            <Text style = {{
+                height :45,
+               marginLeft :10 
+            }}>{product.name}</Text>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    
+                }}
+            >
+                <Image
+                    style={{
+                        width: 14,
+                        height: 14,
+                        margin: 12,
+                    }}
+                    source={require("@image/ic_price.png")}
+                />
+                <Text style = {{
+                    color : 'red'
+                }}>{product.price} đ</Text>
+            </View>
+
+
+        </View>)
+    }
+    _funcBlock() {
+        return (<View style={{
+            width: "90%",
+            height: 200,
+            margin: 10,
+            backgroundColor: 'white'
+        }}>
+        </View>)
+    }
+
+    _getData = async () => {
+        try {
+            response = await requestUserInfo("deviceid")
+            reactotron.log(response)
             this.setState({
                 isLoading: false,
-                data: response.data.data
+                datauser: response.datauser
             })
-        }).catch(err => {
-            console.log(err)
+        } catch (error) {
             this.setState({
                 isLoading: false,
-                err: err
+                err: error
             })
-        })
+        }
     }
 
 
@@ -97,7 +170,7 @@ export default class HomeScreen extends Component {
         return (
             <View style={styles.container}>
                 <DaiichiHeader
-                    title={"xin chao ," + this.state.data.customerName}
+                    title={"xin chao , "}
                 />
                 {this._renderBody()}
             </View>
@@ -109,6 +182,7 @@ export default class HomeScreen extends Component {
         if (this.state.err)
             return (<Text>Đã có lỗi xảy ra, vui lòng thử lại</Text>)
         return (
+
             <View style={styles.container}>
                 <ScrollView>
                     <View style={styles.box_Touch}>
@@ -138,23 +212,35 @@ export default class HomeScreen extends Component {
                             </View>
                         </View>
                     </View>
-                    <View>
+                    <View style = {{
+                        marginLeft : 10 ,
+                        marginTop : 7 
+                    }}>
                         <View style={styles.view_text}>
-                            <Text>Sản Phẩm</Text>
+                            <Text style = {{
+                                fontSize : 18 ,
+                                fontFamily : 'Roboto',
+                                color : 'red'
+                            }}>Sản Phẩm</Text>
                             <TouchableOpacity>
-                                <Text>Tất cả</Text>
+                                <Text style = {{
+                                    color : 'red',
+                                    marginRight : 10 
+                                }}
+                                >Tất cả</Text>
                             </TouchableOpacity>
                         </View>
-                       <ScrollView horizontal = {true}>
-                           
-                              { this.state.dataproduct.listProduct.map(product => {
-                                  return this._productItem(product)
-                              })}
-                       </ScrollView>
+                        <ScrollView horizontal={true}>
+
+                            {this.state.data.listProduct.map(product => {
+                                return this._productItem(product)
+                            })}
+                        </ScrollView>
 
                     </View>
                 </ScrollView>
             </View>
+
         )
     }
 
@@ -170,17 +256,7 @@ export default class HomeScreen extends Component {
             </TouchableOpacity>
         )
     }
-    _Buttonview(title) {
-
-        return (
-            <TouchableOpacity style={{ flexDirection: 'row' }}>
-                <Image source={require('../assets/images/img_product.png')}>
-                </Image >
-                <Text>{title}</Text>
-
-            </TouchableOpacity>
-        )
-    }
+    
 
 }
 
@@ -196,14 +272,14 @@ const styles = StyleSheet.create({
         marginRight: 12,
         marginTop: 65,
         backgroundColor: '#FFFFFF',
-        borderRadius :5 ,
+        borderRadius: 5,
         shadowOffset: {
             width: 0,
             height: 1.5,
-          },
-          shadowRadius: 2,
-          shadowOpacity: 0.2,
-          elevation: 3,
+        },
+        shadowRadius: 2,
+        shadowOpacity: 0.2,
+        elevation: 3,
 
     },
     box_Touch_component1: {
@@ -219,10 +295,10 @@ const styles = StyleSheet.create({
         fontFamily: 'Regular'
     },
     view_bottom: {
-        marginLeft: 31,
-        marginRight: 39,
+        marginTop: 10,
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-around',
+        
 
     },
     image: {
@@ -240,6 +316,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     line: {
+        marginTop :9 ,
         marginLeft: 30,
         marginRight: 27,
         height: 1,
@@ -250,16 +327,17 @@ const styles = StyleSheet.create({
         margin: 2,
         width: 150,
         height: 198,
-        borderRadius :5 ,
+        borderRadius: 5,
         shadowOffset: {
             width: 0,
             height: 1.5,
-          },
-          shadowRadius: 2,
-          shadowOpacity: 0.2,
-          elevation: 3,
+        },
+        shadowRadius: 2,
+        shadowOpacity: 0.2,
+        elevation: 3,
     },
     view_text: {
+        marginTop : 13,
         flexDirection: 'row',
         justifyContent: 'space-between'
     }
