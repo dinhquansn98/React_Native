@@ -142,7 +142,7 @@ export default class UserScreen extends Component {
             </View>
         )
     }
-
+xxxxxxxxxxxxxxxxxxx
 }
 
 const styles = StyleSheet.create({
